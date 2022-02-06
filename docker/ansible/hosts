@@ -1,0 +1,5 @@
+[webservers]
+127.0.0.1
+
+[webservers:var]
+ansible_ssh_private_key_file=C:\Users\olha.roshchepii\OneDrive - Sigma Software LLC\Documents\Olga Intern\Keys for aws\ansible keys to connect to ec2\id_rsa
