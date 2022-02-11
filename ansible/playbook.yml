@@ -1,6 +1,3 @@
-#########################################################
-# DO Community Playbooks: Wordpress on Ubuntu 18.04 LAMP
-#########################################################
 ---
 - hosts: all
   become: true
@@ -8,11 +5,6 @@
     - vars/default.yml
     - vars/Ubuntu.yml
   tasks:
-  #rename ec2 
-    - name: Rename EC2
-      template:
-        src: "aws_change_name.yml"
-
     - name: Install prerequisites
       apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
       tags: [ system ]
@@ -60,10 +52,11 @@
       tags: [ apache ]
 
   #  MySQL Configuration
+
     - name: Set the root password
       mysql_user:
         name: root
-        password: " {{ mysql_root_password }}"
+        password: "{{ mysql_root_password }}"
         login_unix_socket: /var/run/mysqld/mysqld.sock
       tags: [ mysql, mysql-root ]
 
@@ -98,7 +91,7 @@
         password: "{{ mysql_password }}"
         priv: "{{ mysql_db }}.*:ALL"
         state: present
-        login_user: zabbix
+        login_user: root
         login_password: "{{ mysql_root_password }}"
       tags: [ mysql ]
 
@@ -153,35 +146,4 @@
         name: apache2
         state: restarted
 
-  #zabbix-agent
-    - name: Install Zabbix 5.0
-      template:
-        src: "install_zabbix.yml"
-
-
-#    - name: Add file with playbook zabbix-agent
-#      template:
-#        src: "/home/ubuntu/test2/ansible-playbooks/wordpress-lamp_ubuntu1804/install_zabbix.yml" 
-  #  - name: Install agent
-  #    include_role:
-  #      name: community.zabbix.zabbix_agent
-  #    tags:
-  #      - install
-  #  - name: Create a new host or update an existing host's info
-  #    local_action:
-  #      module: community.zabbix.zabbix_host
-  #      server_url: "{{ zabbix_url }}"
-  #      login_user: "{{ zabbix_api_user }}"
-  #      login_password: "{{ zabbix_api_pass }}"
-  #      host_name: "{{ item }}"
-  #      visible_name: "{{ hostvars[item].zabbix_visible_name | default(item) }}"
-  #      description: "{{   hostvars[item].zabbix_host_description | default('') }} OS: {{  hostvars[item].ansible_distri>       link_templates: "{{ hostvars[item].zabbix_link_templates }}"
-  #      status: "{{  hostvars[item].zabbix_host_status }}"
-  #      state: present
-  #      inventory_mode: disabled
-  #      interfaces:
-  #        - type: "{{ hostvars[item].zabbix_interface_type }}"
-  #          main: 1
-  #          useip: "{{ hostvars[item].zabbix_interface_use_ip }}"
-  #          ip: "{{ hostvars[item].zabbix_interface_ip }}"
-  #          dns: "{{ item }}"
+ 
